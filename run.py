@@ -69,11 +69,35 @@ def update_sales_work_sheet(data):
     print('sales updated.\n')
 
 
+def update_surplus_work_sheet(data):
+    print('updating surplus in work sheet')
+    surplus_work_sheet = SHEET.worksheet('surplus')
+    surplus_work_sheet.append_row(data)
+    print('surplus updated.\n')
+
+
+def update_worksheet(data, worksheet):
+    print(f'updating {worksheet} in work sheet\n')
+    # surplus_work_sheet =
+    # surplus_work_sheet.append_row(data)
+
+    worksheet_to_update = SHEET.worksheet(worksheet)
+    worksheet_to_update.append_row(data)
+    print(f'{worksheet} updated successfully.\n')
+
+
 def calculate_surplus_data(sales_row):
     print('calculate surplus starting')
     stock = SHEET.worksheet('stock').get_all_values()
     stock_row = stock[-1]
-    pprint(stock_row)
+    # print(f'stock_row: {stock_row}')
+    # print(f'sales_row: {sales_row}')
+    surplus_data = []
+    for stock, sales in zip(stock_row, sales_row):
+        surplus = int(stock)-sales
+        surplus_data.append(surplus)
+    print(surplus_data)
+    return surplus_data
 
 
 def main():
@@ -82,8 +106,10 @@ def main():
     print('data ', data)
     sales_data = [int(num) for num in data]
     print(sales_data)
-    update_sales_work_sheet(sales_data)
-    calculate_surplus_data(sales_data)
+    update_worksheet(sales_data, 'sales')
+    new_surplus_data = calculate_surplus_data(sales_data)
+    # print(new_surplus_data)
+    update_worksheet(new_surplus_data, 'surplus')
 
 
 print('Welcom to lovesand project..')
